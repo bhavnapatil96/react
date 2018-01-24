@@ -1,9 +1,11 @@
 import  React from 'react';
 import  ReactDOM from 'react-dom';
 import './index.css';
-import TodoItem from './components/TodoItem.js'
-import TodoForm from './components/TodoForm.js'
+import TodoItem from './components/TodoItem.js';
+import TodoForm from './components/TodoForm.js';
+import $ from 'jquery';
 
+import bindFun from './util.js';
 class Hello extends React.Component{
 
 
@@ -41,12 +43,12 @@ class HelloWorld extends  React.Component{
 class TodoList extends React.Component{
     constructor(){
         super();
-        this.changeStatus=this.changeStatus.bind(this);
-        this.updateTask=this.updateTask.bind(this);
-        this.addTask=this.addTask.bind(this);
-        this.deleteTask=this.deleteTask.bind(this);
-        this.editTask=this.editTask.bind(this);
-
+        // this.changeStatus=this.changeStatus.bind(this);
+        // this.updateTask=this.updateTask.bind(this);
+        // this.addTask=this.addTask.bind(this);
+        // this.deleteTask=this.deleteTask.bind(this);
+        // this.editTask=this.editTask.bind(this);
+        bindFun.call(this,['changeStatus','updateTask','addTask','deleteTask','editTask']);
         this.state={
          tasks:[{
             name:"buy a Milk",
@@ -177,4 +179,35 @@ class App extends React.Component{
     }
 }
 
-ReactDOM.render(<App/>,document.getElementById('root'));
+class MyApp extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+            users:[]
+        }
+    }
+    componentDidMount(){
+        $.ajax({
+            url:'https://jsonplaceholder.typicode.com/users',
+            success:(data)=>{
+                this.setState({
+                    users:data
+
+                })
+            }
+        })
+    }
+    render(){
+        const {users}=this.state
+        return(
+            <ul>
+                {
+                    users.map((user)=>{
+                       return    <li key={user.id}>{user.name}</li>
+                    })
+                }
+            </ul>
+        )
+    }
+}
+ReactDOM.render(<TodoList/>,document.getElementById('root'));
